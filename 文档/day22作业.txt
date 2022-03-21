@@ -1,0 +1,22 @@
+第一题：
+（1）定义接口A，里面包含值为3.14的常量PI和抽象方法double area()。 
+（2）定义接口B，里面包含抽象方法void setColor(String c)。 
+（3）定义接口C，该接口继承了接口A和B，里面包含抽象方法void volume()。 
+（4）定义圆柱体类Cylinder实现接口C，该类中包含三个成员变量：底圆半径radius、 
+圆柱体的高height、颜色color。 
+（5）创建主类来测试类Cylinder。
+
+第二题：
+利用接口做参数，写个计算器，能完成加减乘除运算。
+（1）定义一个接口Compute含有一个方法int computer(int n, int m)。
+（2）设计四个类分别实现此接口，完成加、减、乘、除运算。
+（3）设计一个类UseCompute，类中含有方法：public void useCom(Compute com, int one, int two)，此方法能够用传递过来的对象调用computer方法完成运算，并输出运算的结果。
+（4）设计一个主类Test，调用UseCompute中的方法useCom来完成加减乘除运算。
+
+第三题：
+按要求编写一个Java应用程序程序：
+（1）定义一个接口CanFly，描述会飞的方法public void fly();
+（2）分别定义类飞机和鸟，实现CanFly接口。
+（3）定义一个测试类，测试飞机和鸟，在main方法中创建飞机对象和鸟对象，
+
+再定义一个makeFly()方法，其中让会飞的事物飞。并在main方法中调用该方法，让飞机和鸟起飞。

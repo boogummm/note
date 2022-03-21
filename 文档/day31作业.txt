@@ -1,0 +1,11 @@
+
+拷贝目录：
+	将D:\course拷贝到C盘根下....
+
+	需要使用到：
+		FileInputStream
+		FileOutputStream
+		File
+	
+	可能需要使用到递归。你尝试实现一下！
+

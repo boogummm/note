@@ -1,0 +1,182 @@
+day35课堂笔记
+
+1、回顾反射机制
+
+	1.1、什么是反射机制？反射机制有什么用？
+		反射机制：可以操作字节码文件
+		作用：可以让程序更加灵活。
+
+	1.2、反射机制相关的类在哪个包下？
+		java.lang.reflect.*;
+
+	1.3、反射机制相关的主要的类？
+		java.lang.Class
+		java.lang.reflect.Method;
+		java.lang.reflect.Constructor;
+		java.lang.reflect.Field;
+
+	1.4、在java中获取Class的三种方式？
+		第一种：	 
+			Class c = Class.forName("完整类名");
+		第二种：
+			Class c = 对象.getClass();
+		第三种：
+			Class c = int.class;
+			Class c = String.class;
+
+	1.5、获取了Class之后，可以调用无参数构造方法来实例化对象
+
+		//c代表的就是日期Date类型
+		Class c = Class.forName("java.util.Date");
+
+		//实例化一个Date日期类型的对象
+		Object obj = c.newInstance();
+
+		一定要注意：
+			newInstance()底层调用的是该类型的无参数构造方法。
+			如果没有这个无参数构造方法会出现"实例化"异常。
+	
+	1.6、如果你只想让一个类的“静态代码块”执行的话，你可以怎么做？
+		Class.forName("该类的类名");
+		这样类就加载，类加载的时候，静态代码块执行！！！！
+		在这里，对该方法的返回值不感兴趣，主要是为了使用“类加载”这个动作。
+	
+	1.7、关于路径问题？
+
+		String path = Thread.currentThread().getContextClassLoader()
+						  .getResource("写相对路径，但是这个相对路径从src出发开始找").getPath();	
+
+		String path = Thread.currentThread().getContextClassLoader()
+						  .getResource("abc").getPath();	//必须保证src下有abc文件。
+
+		String path = Thread.currentThread().getContextClassLoader()
+						  .getResource("a/db").getPath();	//必须保证src下有a目录，a目录下有db文件。
+		
+		String path = Thread.currentThread().getContextClassLoader()
+						  .getResource("com/bjpowernode/test.properties").getPath();	
+						  //必须保证src下有com目录，com目录下有bjpowernode目录。
+						  //bjpowernode目录下有test.properties文件。
+
+		这种方式是为了获取一个文件的绝对路径。（通用方式，不会受到环境移植的影响。）
+		但是该文件要求放在类路径下，换句话说：也就是放到src下面。
+		src下是类的根路径。
+
+		直接以流的形式返回：
+		InputStream in = Thread.currentThread().getContextClassLoader()
+								.getResourceAsStream("com/bjpowernode/test.properties");
+
+	1.8、IO + Properties，怎么快速绑定属性资源文件？
+
+		//要求：第一这个文件必须在类路径下
+		//第二这个文件必须是以.properties结尾。
+		ResourceBundle bundle = ResourceBundle.getBundle("com/bjpowernode/test");
+		String value = bundle.getString(key);
+	
+
+2、今日反射机制的重点内容
+	2.1、通过反射机制访问对象的某个属性。
+	2.2、通过反射机制调用对象的某个方法。
+	2.3、通过反射机制调用某个构造方法实例化对象。
+	2.4、通过反射机制获取父类以及父类型接口。
+
+3、注解
+
+	3.1、注解，或者叫做注释类型，英文单词是：Annotation
+		疑问：注解到底是干啥的？？？？？？？？？
+
+	3.2、注解Annotation是一种引用数据类型。编译之后也是生成xxx.class文件。
+
+	3.3、怎么自定义注解呢？语法格式？
+
+		 [修饰符列表] @interface 注解类型名{
+
+		 }
+	
+	3.4、注解怎么使用，用在什么地方？
+
+		第一：注解使用时的语法格式是：
+			@注解类型名
+		
+		第二：注解可以出现在类上、属性上、方法上、变量上等....
+		注解还可以出现在注解类型上。
+	
+	3.5、JDK内置了哪些注解呢？
+
+		java.lang包下的注释类型：
+
+			掌握：
+			Deprecated 用 @Deprecated 注释的程序元素，
+			不鼓励程序员使用这样的元素，通常是因为它很危险或存在更好的选择。 
+
+			掌握：
+			Override 表示一个方法声明打算重写超类中的另一个方法声明。 
+
+			不用掌握：
+			SuppressWarnings 指示应该在注释元素（以及包含在该注释元素中的
+			所有程序元素）中取消显示指定的编译器警告。 
+	
+	3.6、元注解
+		什么是元注解？
+			用来标注“注解类型”的“注解”，称为元注解。
+
+		常见的元注解有哪些？
+			Target
+			Retention
+		
+		关于Target注解：
+			这是一个元注解，用来标注“注解类型”的“注解”
+			这个Target注解用来标注“被标注的注解”可以出现在哪些位置上。
+
+			@Target(ElementType.METHOD)：表示“被标注的注解”只能出现在方法上。
+			@Target(value={CONSTRUCTOR, FIELD, LOCAL_VARIABLE, METHOD, PACKAGE, MODULE, PARAMETER, TYPE})
+				表示该注解可以出现在：
+					构造方法上
+					字段上
+					局部变量上
+					方法上
+					....
+					类上...
+		
+		关于Retention注解：
+			这是一个元注解，用来标注“注解类型”的“注解”
+			这个Retention注解用来标注“被标注的注解”最终保存在哪里。
+
+			@Retention(RetentionPolicy.SOURCE)：表示该注解只被保留在java源文件中。
+			@Retention(RetentionPolicy.CLASS)：表示该注解被保存在class文件中。
+			@Retention(RetentionPolicy.RUNTIME)：表示该注解被保存在class文件中，并且可以被反射机制所读取。
+		
+	3.7、Retention的源代码
+
+			//元注解	
+			public @interface Retention {
+				//属性
+				RetentionPolicy value();
+			}
+			
+		RetentionPolicy的源代码：
+			public enum RetentionPolicy {
+				 SOURCE,
+				 CLASS,
+				 RUNTIME
+			}
+
+			//@Retention(value=RetentionPolicy.RUNTIME)
+			@Retention(RetentionPolicy.RUNTIME)
+			public @interface MyAnnotation{}
+
+
+
+	3.8、Target的源代码
+		
+
+	3.9、注解在开发中有什么用呢？
+
+		需求：
+			假设有这样一个注解，叫做：@Id
+			这个注解只能出现在类上面，当这个类上有这个注解的时候，
+			要求这个类中必须有一个int类型的id属性。如果没有这个属性
+			就报异常。如果有这个属性则正常执行！
+
+
+4、JDK新特性
+	后续。。。。。。。
